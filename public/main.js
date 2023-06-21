@@ -1,10 +1,12 @@
+let span = document.createElement('span');
+
 // delete and remove buttons
 const deleteButton = document.querySelector('#delete')
 const clearButton = document.querySelector('#clear')
 
 // screen display
 const displayResult = document.querySelector('#result')
-const displayEvaluation = document.querySelector('#evaluate')
+const displayExpression = document.querySelector('#evaluate')
 
 // operator
 const operatorButton = document.querySelectorAll('.op')
@@ -18,63 +20,71 @@ let opOn = false;
 let displayValueExpression = '';
 
 integersButton.forEach(integer => {
-    integer.addEventListener('click', function () {
-        if (displayEvaluation.textContent === '0') {
-            displayEvaluation.textContent = '';     
+    integer.addEventListener('click', function (e) {
+        if (displayExpression.textContent === '0') {
+            displayExpression.textContent = '';     
         }
 
-        if (integer.value === '.' && precedentButton === integer.value) {
+        if (e.target.value === '.' && precedentButton === e.target.value) {
             return;
         }
-        displayEvaluation.textContent += integer.value;
-        precedentButton = integer.value;  
+        displayExpression.textContent += e.target.value;
+        precedentButton = e.target.value;  
         opOn = false; 
 
         // variable storing the display value for later evaluation
-        displayValueExpression  = displayEvaluation.textContent;
+        displayValueExpression  = displayExpression.textContent;
         // console.log(displayValueExpression);
 
     });
 });
 
 operatorButton.forEach(op => {
-    op.addEventListener('click', function () {
-        if (precedentButton === op.value || opOn === true) {
-            return;
-        };
-        displayEvaluation.textContent += op.value;
-        precedentButton = op.value; 
+    op.addEventListener('click', function (e) {
+        if (precedentButton === e.target.value || opOn === true) return;
+
+        displayExpression.textContent += e.target.value;
+        precedentButton = e.target.value; 
         opOn = true;  
-        
         // variable storing the display value for later evaluation
-        displayValueExpression  = displayEvaluation.textContent;
+        displayValueExpression  = displayExpression.textContent;
         // console.log(displayValueExpression)
 
     });
 });
 
 clearButton.addEventListener('click', function () {
-    displayEvaluation.textContent = '0';
+    displayExpression.textContent = '0';
+    displayResult.textContent = '0';
     precedentButton = '';         
-
 });
 
-deleteButton.addEventListener('click', function () {
-    if (displayEvaluation.textContent.length > 0) {
-        displayEvaluation.textContent = displayEvaluation.textContent.slice(0, -1);
+deleteButton.addEventListener('click', function (e) {
+    if (displayExpression.textContent.length > 0) {
+        displayExpression.textContent = displayExpression.textContent.slice(0, -1);
         precedentButton = '';   
         opOn = false;   
         
         // variable storing the display value for later evaluation
-        displayValueExpression  = displayEvaluation.textContent;
+        displayValueExpression  = displayExpression.textContent;
         // console.log(displayValueExpression);  
 
-        if  (displayEvaluation.textContent.length === 0) {
-            displayEvaluation.textContent = '0';
+        if  (displayExpression.textContent.length === 0) {
+            displayExpression.textContent = '0';
         }
     } 
 });
 
+
+let opSize = 0;
+opCounter = () => {
+    for (let i in displayExpression.textContent) {
+        if (isNaN(i) && i !== '.') {
+            opSize++;
+        }
+        console.log(opSize)
+    }
+}; 
 // create three variable to hold number one, nuber two, and the operator
 
 let firstExpressionDigits = '';
@@ -82,71 +92,110 @@ let secondExpressionDigits = '';
 let operatorExpression = '';
 
 const evaluateInput = () => {
-    const operationType = (operation, a, b) => {
-        switch (operation) {
-            case 'add':
-                    const add = (a, b) => {
-                        return a + b;
-                    }
-                    return add(a, b);
+    const mathOperations = (operator, a, b) => {
+        let calculator = 0;
+        a = parseFloat(a);
+        b = parseFloat(b);
+
+        if (operator === 'x') {
+            operator = '*';
+        } else if (operator === '÷') {
+            operator = '/';
+        }
+
+        switch (operator) {
+            case '+':
+                calculator = a + b;
                 break;
-            case 'substract':
-                    const substract = (a, b) => {
-                        return a + b;
-                    }
-                    return substract(a, b);
+            case '-':
+                calculator = a - b;
                 break;
     
-            case 'multiply':
-                    const multiply = (a, b) => {
-                        return a + b;
-                    }
-                    return multiply(a, b);
+            case '*':
+                calculator = a * b;
                 break;
-            case 'divide':
-                    const divide = (a, b) => {
-                        return a + b;
-                    }
-                    return divide(a, b);
+            case '/':
+                calculator = a / b;
                 break;
             default:
                 console.log('An error occured!')
                 break;
         }
+        return calculator;
     }    
     // expression evaluation logics
-    let twoOperatorSigns = false;
+
+    let tempResult = 0;
+    let inputValues = 0;
 
     const inputs = document.querySelectorAll('input[type=button]');
     inputs.forEach(input => {
-        input.addEventListener('click', function() {
-            if (input.value === '=' || twoOperatorSigns === true) {
-                // do evaluation
-                // console.log(input.value)
-                // console.log(displayEvaluation.textContent);
+        input.addEventListener('click', function(e) {
+            if (isNaN(e.target.value) && input.className === 'op') {
+                // console.log(input)
+            }
 
-                // temp solution
-                displayResult.textContent = eval(displayEvaluation.textContent);
-                return;
-                // temp solution
+// simple operation executor
+            if (e.target.value === '=') {
+                // console.log(operatorSignIsMoreThanOne, operatorExpression, firstExpressionDigits, secondExpressionDigits)
+                // if(inputValues.includes('+')) {
+                //     operatorExpression = '+'
+                //     firstExpressionDigits = inputValues.split('+')[0];
+                //     secondExpressionDigits = inputValues.split('+')[1];
+                // } else if(inputValues.includes('-')) {
+                //     operatorExpression = '-'
+                //     firstExpressionDigits = inputValues.split('-')[0];
+                //     secondExpressionDigits = inputValues.split('-')[1];
+                // } else if(inputValues.includes('x')) {
+                //     operatorExpression = 'x'
+                //     firstExpressionDigits = inputValues.split('x')[0];
+                //     secondExpressionDigits = inputValues.split('x')[1];
+                // } else if (inputValues.includes('÷')) {
+                //     operatorExpression = '÷'
+                //     firstExpressionDigits = inputValues.split('÷')[0];
+                //     secondExpressionDigits = inputValues.split('÷')[1];
+                // }
+                // displayResult.textContent = mathOperations(operatorExpression, firstExpressionDigits, secondExpressionDigits)
+                displayResult.textContent = eval(displayExpression.textContent);
+            }
+// simple operation executor above
 
-                for (let n in displayEvaluation.textContent) {
-                    if (Number(n)) {
-                        console.log('NaN bro!')
-                        let tempNumbers = displayEvaluation.textContent.slice(indexOf(n), -1);
-                        // return
-                        // enter in another loop to get the second number
-                            // for (let s in ) {}
-                        console.log(tempNumbers)
-                    } else {
-                        firstExpressionDigits += n;
-                        console.log(`number one ${firstExpressionDigits}`)
-                    }
-                    // console.log(firstExpressionDigits)
-                }
-            } 
+// very complex operation executor below here
+
+            // inputValues = displayExpression.textContent;
+            // if (opSize >= 2) {
+
+                // inputValues = inputValues.slice(0, -1);
+                // function separate (str) {
+                //     if(inputValues.includes('+')) {
+                //         operatorExpression = '+'
+                //         firstExpressionDigits = inputValues.split('+')[0];
+                //         secondExpressionDigits = inputValues.split('+')[1];
+                //     } else if(inputValues.includes('-')) {
+                //         operatorExpression = '-'
+                //         firstExpressionDigits = inputValues.split('-')[0];
+                //         secondExpressionDigits = inputValues.split('-')[1];
+                //     } else if(inputValues.includes('x')) {
+                //         operatorExpression = 'x'
+                //         firstExpressionDigits = inputValues.split('x')[0];
+                //         secondExpressionDigits = inputValues.split('x')[1];
+                //     } else if (inputValues.includes('÷')) {
+                //         operatorExpression = '÷'
+                //         firstExpressionDigits = inputValues.split('÷')[0];
+                //         secondExpressionDigits = inputValues.split('÷')[1];
+                //     } 
+                // }
+
+                // separate(inputValues);
+                // mathOperations(operatorExpression, firstExpressionDigits, secondExpressionDigits)
+                // displayExpression.textContent = `${mathOperations(operatorExpression, firstExpressionDigits, secondExpressionDigits)}${inputValues.slice(-1)}`;
+                // opCounter();
+            // }  
+// very complex operation executor above here
+            
         })
     });
 }
 
 evaluateInput ();
+
