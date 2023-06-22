@@ -61,7 +61,6 @@ body {
     grid-template-columns: repeat(4, minmax(60px, 1fr));
     border-top: 2px solid #000;
     border-radius: 0 0 8px 8px;
-    /* box-shadow: inset 6px 6px 6px rgba(0, 0, 0, 0.4), inset -6px -6px 6px rgba(0, 0, 0, 0.4); */
     box-shadow: inset 4px 4px 4px rgba(0, 0, 0, 0.4), inset -4px -4px 4px rgba(0, 0, 0, 0.4);
 }
 
@@ -72,6 +71,9 @@ input {
 input:active {
     box-shadow: 0 0 0 rgba(0, 0, 0, 0.4), 0 0 0 rgba(0, 0, 0, 0.4);
 }
+input:hover {
+    cursor: pointer;
+}
 
 input[type=button] {
     font: inherit;
@@ -79,13 +81,13 @@ input[type=button] {
     color: #fff;
     background-color: rgb(40, 46, 46);
     border: 1px solid #000;
-    /* box-shadow: inset 6px 6px 6px rgba(0, 0, 0, 0.4), inset -6px -6px 6px rgba(0, 0, 0, 0.4); */
-    /* box-shadow: inset 3px 3px 3px rgba(0, 0, 0, 0.4), inset -3px -3px 3px rgba(0, 0, 0, 0.4); */
     box-shadow: inset 2.2px 2.2px 2.2px rgba(0, 0, 0, 0.4), inset -2.2px -2.2px 2.2px rgba(0, 0, 0, 0.4);
 }
 
-input[type=button]:active {
+#digits > input[type=button]:active {
     background-color: #373738;
+    box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.4), inset -1px -1px 1px rgba(0, 0, 0, 0.4);
+    transition: ease-out 2s;
 }
 
 section.screen {
